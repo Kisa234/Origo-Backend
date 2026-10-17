@@ -9,6 +9,7 @@ interface Options{
 
 const allowedOrigins = [
   'http://localhost:4200',
+  'http://localhost:5173',
   'https://roastsync-upkm.onrender.com'
 ];
 
