@@ -101,7 +101,7 @@ export class LoteDataSourceImpl implements LoteDataSource {
     if (!lotes) throw new Error("No existen lotes para el usuario");
     return lotes.map(lote => LoteEntity.fromObject(lote));
   }
-  
+
   async getLotesTostados(): Promise<LoteEntity[]> {
     const lotes = await prisma.lote.findMany({
       where: {
@@ -180,6 +180,13 @@ export class LoteDataSourceImpl implements LoteDataSource {
     return lotes.map(lote => LoteEntity.fromObject(lote));
   }
 
-
+  async existeIdLote(id: string): Promise<boolean> {
+    const count = await prisma.lote.count({
+      where: {
+        id_lote: id
+      }
+    });
+    return count > 0;
+  }
 
 }

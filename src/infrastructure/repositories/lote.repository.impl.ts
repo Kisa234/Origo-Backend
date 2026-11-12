@@ -52,4 +52,7 @@ export class LoteRepositoryImpl implements LoteRepository {
     getLotesOwnedByStore(incluirEliminados: boolean = false): Promise<LoteEntity[]> {
         return this.datasource.getLotesOwnedByStore(incluirEliminados);
     }
+    existeIdLote(id: string): Promise<boolean> {
+        return this.datasource.existeIdLote(id);
+    }
 }

@@ -98,11 +98,9 @@ export class CreateLote implements CreateLoteUseCase {
             const inicialNombreUser = partesNombre[0]?.charAt(0).toUpperCase() || '';
             const inicialApellidoUser = partesNombre[1]?.charAt(0).toUpperCase() || '';
 
-            let idGenerado = `${inicialNombreUser}${inicialApellidoUser}-${id_c}`;
-            if (tueste) {
-                idGenerado = `${idGenerado}-T`;
-            }
-            return idGenerado;
+            return this.asegurarIdUnico(letra =>
+                `${inicialNombreUser}${inicialApellidoUser}${letra}-${id_c}${tueste ? '-T' : ''}`
+            );
         }
 
         //  lOTE NUEVO (raíz — tienda o cliente desde cero)
@@ -152,13 +150,21 @@ export class CreateLote implements CreateLoteUseCase {
             const inicialNombreUser = partesNombre[0]?.charAt(0).toUpperCase() || '';
             const inicialApellidoUser = partesNombre[1]?.charAt(0).toUpperCase() || '';
 
-            idGenerado = `${inicialNombreUser}${inicialApellidoUser}-${idGenerado}`;
-
-            if (tueste) {
-                idGenerado = `${idGenerado}-T`;
-            }
+            return this.asegurarIdUnico(letra =>
+                `${inicialNombreUser}${inicialApellidoUser}${letra}-${idGenerado}${tueste ? '-T' : ''}`
+            );
         }
 
-        return idGenerado;
+
+
+        return this.asegurarIdUnico(letra => `${idGenerado}${letra}`);
+    }
+
+    private async asegurarIdUnico(construir: (letra: string) => string): Promise<string> {
+        for (const letra of ['', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']) {
+            const id = construir(letra);
+            if (!(await this.loteRepository.existeIdLote(id))) return id;
+        }
+        throw new Error('No se pudo generar un id único para el lote');
     }
 }
